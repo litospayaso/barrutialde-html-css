@@ -1,52 +1,59 @@
 (function() {
   const exercises = [
     {
-      title: 'Jarri titulo bat h1 etiketarekin eta idatzin "dokumentu tituloa" testua',
+      order: 1,
+      title: 'Jarri titulo bat h1 etiketarekin',
       correct: () => {
         const h1 = document.querySelector('h1');
-        return h1 && h1.textContent.trim() === "dokumentu tituloa";
+        return h1 && h1.textContent.trim() !== "";
       }
     },
     {
-      title: 'Jarri subtitulo bat h2 etiketarekin eta idatzin "Hau da dokumentu subtituloa" testua',
+      order: 2,
+      title: 'Jarri subtitulo bat h2 etiketarekin',
       correct: () => {
         const h2 = document.querySelector('h2');
-        return h2 && h2.textContent.trim() === "Hau da dokumentu subtituloa";
+        return h2 && h2.textContent.trim() !== "";
       }
     },
     {
-      title: 'Jarri paragrafo bat (p etiketakerin) eta idatzi "Hau izango litzateke documentu textuak."',
+      order: 3,
+      title: 'Jarri paragrafo bat (p etiketakerin)',
       correct: () => {
         const p = document.querySelector('p');
-        return p && p.textContent.includes("Hau izango litzateke documentu textuak.");
+        return p && p.textContent.trim() !== "";
       }
     },
     {
-      title: 'Jarri hitzak "izango litzateke" negritaz (b etiketakerin)',
+      order: 4,
+      title: 'Jarri negritaz (b etiketakerin) paragrafoaren barruan',
       correct: () => {
         const p = document.querySelector('p');
         if (!p) return false;
         const b = p.querySelector('b');
-        return b && b.textContent.trim() === "izango litzateke";
+        return b && b.textContent.trim() !== "";
       }
     },
     {
-      title: 'Jarri hitzak "dokumentu textuak" kursibaz (i etiketakerin)',
+      order: 5,
+      title: 'Jarri kursibaz (i etiketakerin) paragrafoaren barruan',
       correct: () => {
         const p = document.querySelector('p');
         if (!p) return false;
         const i = p.querySelector('i');
-        return i && i.textContent.trim() === "dokumentu textuak";
+        return i && i.textContent.trim() !== "";
       }
     },
     {
-      title: 'Azpimarratu hitzak "izango litzateke dokumentu textuak" (mark etiketakerin)',
+      order: 6,
+      title: 'Azpimarratu (mark etiketakerin) paragrafoaren barruan',
       correct: () => {
         const mark = document.querySelector('mark');
-        return mark && mark.textContent.trim() === "izango litzateke dokumentu textuak";
+        return mark && mark.textContent.trim() !== "";
       }
     },
     {
+      order: 7,
       title: 'Jarri link bat (a etiketakerin) "https://barrutialde.eus" helbidera eta idatzi "zoaz barrutialde" testua',
       correct: () => {
         const a = document.querySelector('a');
@@ -54,6 +61,7 @@
       }
     },
     {
+      order: 8,
       title: 'Jarri barrutialde logoa (https://barrutialde.eus/wp-content/themes/barrutialde/img/logo.svg) linkaren ondoren (img etiketakerin)',
       correct: () => {
         const img = document.querySelector('img');
@@ -63,22 +71,19 @@
     }
   ];
 
-  function getStep() {
-    return parseInt(localStorage.getItem('zuzendu_step') || '0');
-  }
-
-  function setStep(step) {
-    localStorage.setItem('zuzendu_step', step.toString());
-  }
+  // Sort exercises by order
+  exercises.sort((a, b) => (a.order || 0) - (b.order || 0));
 
   function initZuzendu() {
-    let currentStep = getStep();
+    let currentStep = 0;
 
-    // Check if previous step was completed
-    if (currentStep < exercises.length) {
-      if (exercises[currentStep].correct()) {
-        currentStep++;
-        setStep(currentStep);
+    // Find the first non-correct exercise
+    for (let i = 0;i < exercises.length;i++) {
+      if (exercises[i].correct()) {
+        currentStep = i + 1;
+      } else {
+        currentStep = i;
+        break;
       }
     }
 
@@ -157,7 +162,7 @@
     const descriptionEl = document.createElement('p');
     descriptionEl.textContent = currentStep < exercises.length
       ? exercises[currentStep].title
-      : 'Ariketa guztiak ondo bete dituzu. / Has completado todos los ejercicios.';
+      : 'Ariketa guztiak ondo bete dituzu. Aldatu orain CSS praktikara idazten css-corrector.js fitxategian.';
 
     Object.assign(descriptionEl.style, {
       margin: '0',
@@ -167,31 +172,10 @@
     });
 
     if (currentStep > 0 && currentStep === exercises.length) {
-      // All exercises completed - could add special effect here in the future
     }
-
-    const resetBtn = document.createElement('button');
-    resetBtn.textContent = 'Zuzendu berriro';
-    Object.assign(resetBtn.style, {
-      position: 'absolute',
-      right: '20px',
-      bottom: '10px',
-      background: 'rgba(255,255,255,0.2)',
-      border: 'none',
-      color: 'white',
-      padding: '4px 8px',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '0.7rem'
-    });
-    resetBtn.onclick = () => {
-      localStorage.removeItem('zuzendu_step');
-      location.reload();
-    };
 
     instructionDiv.appendChild(titleEl);
     instructionDiv.appendChild(descriptionEl);
-    instructionDiv.appendChild(resetBtn);
 
     document.body.prepend(instructionDiv);
   }
