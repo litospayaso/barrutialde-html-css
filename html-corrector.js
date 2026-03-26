@@ -54,10 +54,10 @@
     },
     {
       order: 7,
-      title: 'Jarri link bat (a etiketakerin) "https://barrutialde.eus" helbidera eta idatzi "zoaz barrutialde" testua',
+      title: 'Jarri link bat (a etiketakerin) "https://barrutialde.eus" helbidera eta idatzi "zoaz barrutialdera" testua',
       correct: () => {
         const a = document.querySelector('a');
-        return a && a.href.replace(/\/$/, '') === "https://barrutialde.eus" && a.textContent.trim() === "zoaz barrutialde";
+        return a && a.href.replace(/\/$/, '') === "https://barrutialde.eus" && a.textContent.trim() === "zoaz barrutialdera";
       }
     },
     {
